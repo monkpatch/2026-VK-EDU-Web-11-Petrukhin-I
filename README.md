@@ -23,6 +23,8 @@ Then open: http://localhost:8080/public/index.html
 - `login.html` — sign in form
 - `signup.html` — sign up form
 - `profile.html` — profile settings form
+- `hot.html` — hot questions list
+- `tag.html` — questions list filtered by tag
 
 ## Static assets
 

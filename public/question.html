@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="static/css/main.css" />
 </head>
 <body>
-<header class="border-bottom sticky-top bg-white"><nav class="navbar navbar-expand-lg"><div class="container gap-3 flex-wrap"><a class="logo-link fs-4" href="index.html">AskMe</a><form class="d-flex flex-grow-1 header-search"><input class="form-control me-2" type="search" placeholder="Search questions"><button class="btn btn-outline-primary" type="submit">Search</button></form><div class="d-flex align-items-center gap-2 flex-wrap header-actions"><a class="btn btn-primary" href="ask.html">Ask!</a><a class="btn btn-outline-secondary" href="profile.html">My profile</a></div></div></nav></header>
+<header class="border-bottom sticky-top bg-white"><nav class="navbar navbar-expand-lg"><div class="container gap-3 flex-wrap"><a class="logo-link fs-4" href="index.html">AskPupkin</a><form class="d-flex flex-grow-1 header-search"><input class="form-control me-2" type="search" placeholder="Search"><button class="btn btn-outline-primary" type="submit">Search</button></form><div class="d-flex align-items-center gap-2 flex-wrap header-actions"><a class="btn btn-primary" href="ask.html">ASK!</a><a href="login.html">log in</a><a href="signup.html">register</a></div></div></nav></header>
 
 <main class="site-main py-4">
   <div class="container">
@@ -20,37 +20,38 @@
             <div class="text-center">
               <img class="avatar" src="https://picsum.photos/80?3" alt="Avatar" />
               <div class="vote-widget mt-2" data-like-state="up">
-                <button class="btn btn-outline-secondary btn-sm btn-up">▲</button>
-                <strong>28</strong>
-                <button class="btn btn-outline-secondary btn-sm btn-down">▼</button>
+                <span class="vote-count">28</span>
+                <div class="vote-arrows">
+                  <button class="btn-up" type="button" aria-label="upvote">▲</button>
+                  <button class="btn-down" type="button" aria-label="downvote">▼</button>
+                </div>
               </div>
             </div>
             <div class="flex-grow-1">
-              <h1 class="h3">How to configure Nginx reverse proxy for Django?</h1>
-              <p>I need proper static file handling, HTTPS and upstream failover. What is the cleanest production setup?</p>
-              <div class="small text-body-secondary mb-2">Asked 24 Mar 2026 at 11:10 • 5 answers</div>
-              <div class="small">Tags: <a href="#">django</a>, <a href="#">nginx</a>, <a href="#">deploy</a></div>
+              <h1 class="h2">How to build a moon park ?</h1>
+              <p>Lorem ipsum — dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exercitation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
+              <div class="small">Tags: <a href="tag.html">black-jack</a> <a href="#">bender</a></div>
             </div>
           </div>
         </article>
-
-        <h2 class="h4 mb-3">Answers</h2>
 
         <article class="card answer-card mb-3">
           <div class="card-body d-flex gap-3">
             <div class="text-center">
               <img class="avatar" src="https://picsum.photos/80?4" alt="Avatar" />
               <div class="vote-widget mt-2" data-like-state="none">
-                <button class="btn btn-outline-secondary btn-sm btn-up">▲</button>
-                <strong>9</strong>
-                <button class="btn btn-outline-secondary btn-sm btn-down">▼</button>
+                <span class="vote-count">5</span>
+                <div class="vote-arrows">
+                  <button class="btn-up" type="button" aria-label="upvote">▲</button>
+                  <button class="btn-down" type="button" aria-label="downvote">▼</button>
+                </div>
               </div>
             </div>
             <div class="flex-grow-1">
-              <p>Use `location /static/` with `alias`, serve media separately, and proxy pass to Gunicorn socket. Put Certbot on top.</p>
+              <p>First of all I would like to thank you for the invitation to participate in such a ... Russia is the huge territory which in many respects needs to be render habitable.</p>
               <div class="d-flex justify-content-between flex-wrap gap-2 small text-body-secondary">
                 <span>24 Mar 2026 at 11:28</span>
-                <label class="form-check-label"><input class="form-check-input me-1" type="checkbox" checked>Correct answer</label>
+                <label class="form-check-label"><input class="form-check-input me-1" type="checkbox" checked>Correct!</label>
               </div>
             </div>
           </div>
@@ -61,42 +62,35 @@
             <div class="text-center">
               <img class="avatar" src="https://picsum.photos/80?5" alt="Avatar" />
               <div class="vote-widget mt-2" data-like-state="down">
-                <button class="btn btn-outline-secondary btn-sm btn-up">▲</button>
-                <strong>-1</strong>
-                <button class="btn btn-outline-secondary btn-sm btn-down">▼</button>
+                <span class="vote-count">3</span>
+                <div class="vote-arrows">
+                  <button class="btn-up" type="button" aria-label="upvote">▲</button>
+                  <button class="btn-down" type="button" aria-label="downvote">▼</button>
+                </div>
               </div>
             </div>
             <div class="flex-grow-1">
-              <p>Just run Django dev server behind Nginx in production.</p>
+              <p>First of all I would like to thank you for the invitation to participate in such a ... Russia is the huge territory which in many respects needs to be render habitable.</p>
               <div class="d-flex justify-content-between flex-wrap gap-2 small text-body-secondary">
                 <span>24 Mar 2026 at 11:31</span>
-                <label class="form-check-label"><input class="form-check-input me-1" type="checkbox">Correct answer</label>
+                <label class="form-check-label"><input class="form-check-input me-1" type="checkbox">Correct!</label>
               </div>
             </div>
           </div>
         </article>
 
-        <nav aria-label="Answer pages" class="mb-4">
-          <ul class="pagination">
-            <li class="page-item disabled"><span class="page-link">Prev</span></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-          </ul>
-        </nav>
-
         <form class="card answer-form">
           <div class="card-body">
             <h3 class="h5">Your answer</h3>
-            <textarea class="form-control mb-2" placeholder="Write your answer..."></textarea>
-            <button class="btn btn-success" type="submit">Post answer</button>
+            <textarea class="form-control mb-2" placeholder="Enter your answer here.."></textarea>
+            <button class="btn btn-success" type="submit">Answer</button>
           </div>
         </form>
       </section>
 
       <aside class="col-lg-4 sidebar-column">
-        <div class="card sidebar-card"><div class="card-body"><h2 class="h5">Popular tags</h2><div class="d-flex flex-wrap gap-2 mt-3"><span class="badge text-bg-light">python</span><span class="badge text-bg-light">django</span><span class="badge text-bg-light">linux</span></div></div></div>
-        <div class="card sidebar-card"><div class="card-body"><h2 class="h5">Best members</h2><ul class="list-unstyled mb-0 d-grid gap-2 mt-3"><li><a href="#">Alice</a></li><li><a href="#">Bob</a></li><li><a href="#">Charlie</a></li></ul></div></div>
+        <div class="card sidebar-card"><div class="card-body"><h2 class="h5">Popular Tags</h2><p class="mb-1">perl <span class="text-danger">python</span> TechnoPark</p><p class="mb-1"><span class="text-danger">MySQL</span> <span class="text-success">django</span></p><p class="mb-0">MailRu Voloshin <span class="text-warning">Firefox</span></p></div></div>
+        <div class="card sidebar-card"><div class="card-body"><h2 class="h5">Best Members</h2><ul class="list-unstyled mb-0 d-grid gap-2 mt-3"><li><a href="#">Mr. Freeman</a></li><li><a href="#">Dr. House</a></li><li><a href="#">Bender</a></li><li><a href="#">Queen Victoria</a></li><li><a href="#">V. Pupkin</a></li></ul></div></div>
       </aside>
     </div>
   </div>
