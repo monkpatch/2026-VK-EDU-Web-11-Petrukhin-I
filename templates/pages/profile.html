@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="h2 page-title">Settings: Dr. Pepper</h1>
+<form class="d-grid gap-3" style="max-width: 540px;">
+  <div class="row align-items-center g-2"><div class="col-3"><label class="form-label m-0">Login</label></div><div class="col-9"><input class="form-control" value="dr_pepper"></div></div>
+  <div class="row align-items-center g-2"><div class="col-3"><label class="form-label m-0">Email</label></div><div class="col-9"><input class="form-control" value="drpepper@mail.ru"></div></div>
+  <div class="row align-items-center g-2"><div class="col-3"><label class="form-label m-0">NickName</label></div><div class="col-9"><input class="form-control" value="Dr. Perpper"></div></div>
+  <div class="row align-items-start g-2 mt-1"><div class="col-3"><label class="form-label m-0">Upload avatar</label></div><div class="col-9"><img src="https://picsum.photos/150" class="rounded border mb-2" width="120" height="120" alt="avatar preview"><input class="form-control" type="file"></div></div>
+  <div><button class="btn btn-primary" type="submit">Save</button></div>
+</form>
+{% endblock %}

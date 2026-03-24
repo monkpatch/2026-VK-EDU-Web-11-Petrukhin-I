@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="h2 page-title">Registration</h1>
+<div class="text-danger mb-3">Sorry, this email address already registred!</div>
+<form class="d-grid gap-3" style="max-width: 500px;">
+  <div class="row align-items-center g-2"><div class="col-4"><label class="form-label m-0">Login</label></div><div class="col-8"><input class="form-control" value="dr_pepper"></div></div>
+  <div class="row align-items-center g-2"><div class="col-4"><label class="form-label m-0">Email</label></div><div class="col-8"><input class="form-control" value="dr.pepper@mail.ru"></div></div>
+  <div class="row align-items-center g-2"><div class="col-4"><label class="form-label m-0">NickName</label></div><div class="col-8"><input class="form-control" value="Dr.Pepper"></div></div>
+  <div class="row align-items-center g-2"><div class="col-4"><label class="form-label m-0">Password</label></div><div class="col-8"><input class="form-control" type="password" value="********"></div></div>
+  <div class="row align-items-center g-2"><div class="col-4"><label class="form-label m-0">Repeat password</label></div><div class="col-8"><input class="form-control" type="password" value="********"></div></div>
+  <div class="row align-items-center g-2"><div class="col-4"><label class="form-label m-0">Upload avatar</label></div><div class="col-8"><input class="form-control" type="file"></div></div>
+  <div><button class="btn btn-primary" type="submit">Register!</button></div>
+</form>
+{% endblock %}

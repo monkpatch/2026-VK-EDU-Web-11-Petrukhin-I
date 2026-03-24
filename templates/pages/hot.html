@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-end mb-3 flex-wrap gap-3">
+  <h1 class="h2 m-0">Hot Questions</h1>
+  <a href="{% url 'index' %}" class="link-primary">New Questions</a>
+</div>
+<article class="card question-card mb-3">
+  <div class="card-body d-flex gap-3">
+    <div class="text-center"><img class="avatar" src="https://picsum.photos/80?32" alt="Avatar" />
+      <div class="vote-widget mt-2" data-like-state="up"><span class="vote-count">15</span><div class="vote-arrows"><button class="btn-up" type="button">▲</button><button class="btn-down" type="button">▼</button></div></div>
+    </div>
+    <div class="flex-grow-1"><h2 class="h4"><a href="{% url 'question' %}">How to build a moon park ?</a></h2><p class="mb-2">Guys, i have trouble with a moon park.<br>Can't find th black-jack...</p><div class="d-flex flex-wrap gap-3 small"><a href="{% url 'question' %}">answer (3)</a><span>Tags: <a href="{% url 'tag' %}">black-jack</a> <a href="#">bender</a></span></div></div>
+  </div>
+</article>
+{% endblock %}
