@@ -38,6 +38,8 @@ body {
   border-radius: 8px;
   object-fit: cover;
   background: #f1f3f5;
+  display: block;
+  margin: 0 auto;
 }
 
 .user-avatar {
@@ -52,11 +54,13 @@ body {
 }
 
 .vote-widget {
-  display: inline-flex;
+  display: flex;
   border: 2px solid #222;
   border-radius: 4px;
   overflow: hidden;
   background: #fff;
+  margin: 0.5rem auto 0;
+  width: fit-content;
 }
 
 .vote-count {
