@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AskMe — Base layout</title>
+  <link rel="icon" type="image/svg+xml" href="static/img/favicon.svg" />
+  <link rel="stylesheet" href="static/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="static/css/main.css" />
+</head>
+<body>
+  <header class="border-bottom sticky-top bg-white">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container gap-3 flex-wrap">
+        <a class="logo-link fs-4" href="index.html">AskMe</a>
+        <form class="d-flex flex-grow-1 header-search" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search questions" aria-label="Search">
+          <button class="btn btn-outline-primary" type="submit">Search</button>
+        </form>
+        <div class="d-flex align-items-center gap-2 flex-wrap header-actions">
+          <a class="btn btn-primary" href="ask.html">Ask!</a>
+          <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              Ivan (unauthorized view)
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="login.html">Log in</a></li>
+              <li><a class="dropdown-item" href="signup.html">Sign up</a></li>
+              <li><a class="dropdown-item" href="profile.html">Profile (authorized)</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="site-main py-4">
+    <div class="container">
+      <div class="row g-4">
+        <section class="col-lg-8">
+          <h1 class="page-title">Main content area</h1>
+          <p class="text-body-secondary">Use this page as common layout reference for all templates.</p>
+        </section>
+
+        <aside class="col-lg-4 sidebar-column">
+          <div class="card sidebar-card">
+            <div class="card-body">
+              <h2 class="h5">Popular tags</h2>
+              <div class="d-flex flex-wrap gap-2 mt-3">
+                <a href="#" class="badge text-bg-light">python</a>
+                <a href="#" class="badge text-bg-light">django</a>
+                <a href="#" class="badge text-bg-light">linux</a>
+                <a href="#" class="badge text-bg-light">docker</a>
+                <a href="#" class="badge text-bg-light">networking</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card sidebar-card">
+            <div class="card-body">
+              <h2 class="h5">Best members</h2>
+              <ul class="list-unstyled mb-0 d-grid gap-2 mt-3">
+                <li><a href="#">Alice</a></li>
+                <li><a href="#">Bob</a></li>
+                <li><a href="#">Charlie</a></li>
+                <li><a href="#">Diana</a></li>
+                <li><a href="#">Eugene</a></li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-auto border-top py-3 bg-light">
+    <div class="container text-body-secondary small">AskMe mockup • Web HW1</div>
+  </footer>
+
+  <script src="static/js/bootstrap.bundle.min.js"></script>
+  <script src="static/js/main.js"></script>
+</body>
+</html>

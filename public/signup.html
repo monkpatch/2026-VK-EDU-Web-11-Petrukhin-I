@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AskMe — Sign up</title>
+  <link rel="icon" type="image/svg+xml" href="static/img/favicon.svg" />
+  <link rel="stylesheet" href="static/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="static/css/main.css" />
+</head>
+<body>
+<header class="border-bottom sticky-top bg-white"><nav class="navbar navbar-expand-lg"><div class="container gap-3 flex-wrap"><a class="logo-link fs-4" href="index.html">AskMe</a><form class="d-flex flex-grow-1 header-search"><input class="form-control me-2" type="search" placeholder="Search questions"><button class="btn btn-outline-primary" type="submit">Search</button></form><div class="d-flex align-items-center gap-2 flex-wrap header-actions"><a class="btn btn-primary" href="ask.html">Ask!</a><a class="btn btn-outline-secondary" href="login.html">Log in</a></div></div></nav></header>
+
+<main class="site-main py-4"><div class="container"><div class="row justify-content-center"><section class="col-lg-7 col-md-9">
+  <h1 class="h2 page-title">Create account</h1>
+  <form class="card">
+    <div class="card-body d-grid gap-3">
+      <div>
+        <label class="form-label" for="nickname">Nickname</label>
+        <input id="nickname" class="form-control" placeholder="ivan" />
+      </div>
+      <div>
+        <label class="form-label" for="email">Email</label>
+        <input id="email" type="email" class="form-control" placeholder="name@example.com" />
+        <div class="error-text mt-1">Invalid email address.</div>
+      </div>
+      <div>
+        <label class="form-label" for="pass1">Password</label>
+        <input id="pass1" type="password" class="form-control" />
+      </div>
+      <div>
+        <label class="form-label" for="pass2">Repeat password</label>
+        <input id="pass2" type="password" class="form-control" />
+        <div class="error-text mt-1">Passwords do not match.</div>
+      </div>
+      <div>
+        <label class="form-label" for="avatar">Avatar</label>
+        <input id="avatar" class="form-control" type="file" />
+        <div class="help-text mt-1">PNG/JPEG, max 2MB.</div>
+      </div>
+      <button class="btn btn-success" type="submit">Sign up</button>
+    </div>
+  </form>
+</section></div></div></main>
+
+<footer class="mt-auto border-top py-3 bg-light"><div class="container text-body-secondary small">AskMe mockup • Web HW1</div></footer>
+<script src="static/js/bootstrap.bundle.min.js"></script>
+<script src="static/js/main.js"></script>
+</body>
+</html>

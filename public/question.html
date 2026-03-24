@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AskMe — Question</title>
+  <link rel="icon" type="image/svg+xml" href="static/img/favicon.svg" />
+  <link rel="stylesheet" href="static/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="static/css/main.css" />
+</head>
+<body>
+<header class="border-bottom sticky-top bg-white"><nav class="navbar navbar-expand-lg"><div class="container gap-3 flex-wrap"><a class="logo-link fs-4" href="index.html">AskMe</a><form class="d-flex flex-grow-1 header-search"><input class="form-control me-2" type="search" placeholder="Search questions"><button class="btn btn-outline-primary" type="submit">Search</button></form><div class="d-flex align-items-center gap-2 flex-wrap header-actions"><a class="btn btn-primary" href="ask.html">Ask!</a><a class="btn btn-outline-secondary" href="profile.html">My profile</a></div></div></nav></header>
+
+<main class="site-main py-4">
+  <div class="container">
+    <div class="row g-4">
+      <section class="col-lg-8">
+        <article class="card question-card mb-4">
+          <div class="card-body d-flex gap-3">
+            <div class="text-center">
+              <img class="avatar" src="https://picsum.photos/80?3" alt="Avatar" />
+              <div class="vote-widget mt-2" data-like-state="up">
+                <button class="btn btn-outline-secondary btn-sm btn-up">▲</button>
+                <strong>28</strong>
+                <button class="btn btn-outline-secondary btn-sm btn-down">▼</button>
+              </div>
+            </div>
+            <div class="flex-grow-1">
+              <h1 class="h3">How to configure Nginx reverse proxy for Django?</h1>
+              <p>I need proper static file handling, HTTPS and upstream failover. What is the cleanest production setup?</p>
+              <div class="small text-body-secondary mb-2">Asked 24 Mar 2026 at 11:10 • 5 answers</div>
+              <div class="small">Tags: <a href="#">django</a>, <a href="#">nginx</a>, <a href="#">deploy</a></div>
+            </div>
+          </div>
+        </article>
+
+        <h2 class="h4 mb-3">Answers</h2>
+
+        <article class="card answer-card mb-3">
+          <div class="card-body d-flex gap-3">
+            <div class="text-center">
+              <img class="avatar" src="https://picsum.photos/80?4" alt="Avatar" />
+              <div class="vote-widget mt-2" data-like-state="none">
+                <button class="btn btn-outline-secondary btn-sm btn-up">▲</button>
+                <strong>9</strong>
+                <button class="btn btn-outline-secondary btn-sm btn-down">▼</button>
+              </div>
+            </div>
+            <div class="flex-grow-1">
+              <p>Use `location /static/` with `alias`, serve media separately, and proxy pass to Gunicorn socket. Put Certbot on top.</p>
+              <div class="d-flex justify-content-between flex-wrap gap-2 small text-body-secondary">
+                <span>24 Mar 2026 at 11:28</span>
+                <label class="form-check-label"><input class="form-check-input me-1" type="checkbox" checked>Correct answer</label>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card answer-card mb-3">
+          <div class="card-body d-flex gap-3">
+            <div class="text-center">
+              <img class="avatar" src="https://picsum.photos/80?5" alt="Avatar" />
+              <div class="vote-widget mt-2" data-like-state="down">
+                <button class="btn btn-outline-secondary btn-sm btn-up">▲</button>
+                <strong>-1</strong>
+                <button class="btn btn-outline-secondary btn-sm btn-down">▼</button>
+              </div>
+            </div>
+            <div class="flex-grow-1">
+              <p>Just run Django dev server behind Nginx in production.</p>
+              <div class="d-flex justify-content-between flex-wrap gap-2 small text-body-secondary">
+                <span>24 Mar 2026 at 11:31</span>
+                <label class="form-check-label"><input class="form-check-input me-1" type="checkbox">Correct answer</label>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <nav aria-label="Answer pages" class="mb-4">
+          <ul class="pagination">
+            <li class="page-item disabled"><span class="page-link">Prev</span></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+          </ul>
+        </nav>
+
+        <form class="card answer-form">
+          <div class="card-body">
+            <h3 class="h5">Your answer</h3>
+            <textarea class="form-control mb-2" placeholder="Write your answer..."></textarea>
+            <button class="btn btn-success" type="submit">Post answer</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="col-lg-4 sidebar-column">
+        <div class="card sidebar-card"><div class="card-body"><h2 class="h5">Popular tags</h2><div class="d-flex flex-wrap gap-2 mt-3"><span class="badge text-bg-light">python</span><span class="badge text-bg-light">django</span><span class="badge text-bg-light">linux</span></div></div></div>
+        <div class="card sidebar-card"><div class="card-body"><h2 class="h5">Best members</h2><ul class="list-unstyled mb-0 d-grid gap-2 mt-3"><li><a href="#">Alice</a></li><li><a href="#">Bob</a></li><li><a href="#">Charlie</a></li></ul></div></div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<footer class="mt-auto border-top py-3 bg-light"><div class="container text-body-secondary small">AskMe mockup • Web HW1</div></footer>
+<script src="static/js/bootstrap.bundle.min.js"></script>
+<script src="static/js/main.js"></script>
+</body>
+</html>
