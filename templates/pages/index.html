@@ -4,22 +4,8 @@
   <h1 class="h2 m-0">New Questions</h1>
   <a href="{% url 'hot' %}" class="link-primary">Hot Questions</a>
 </div>
-{% for n in '123' %}
-<article class="card question-card mb-3">
-  <div class="card-body d-flex gap-3">
-    <div class="text-center">
-      <img class="avatar" src="https://picsum.photos/80?{{ forloop.counter }}" alt="Avatar" />
-      <div class="vote-widget mt-2" data-like-state="none">
-        <span class="vote-count">5</span>
-        <div class="vote-arrows"><button class="btn-up" type="button">▲</button><button class="btn-down" type="button">▼</button></div>
-      </div>
-    </div>
-    <div class="flex-grow-1">
-      <h2 class="h4"><a href="{% url 'question' %}">How to build a moon park ?</a></h2>
-      <p class="mb-2">Guys, i have trouble with a moon park.<br>Can't find th black-jack...</p>
-      <div class="d-flex flex-wrap gap-3 small"><a href="{% url 'question' %}">answer (3)</a><span>Tags: <a href="{% url 'tag' %}">black-jack</a> <a href="#">bender</a></span></div>
-    </div>
-  </div>
-</article>
+{% for question in page_obj %}
+  {% include 'includes/question_card.html' %}
 {% endfor %}
+{% include 'includes/paginator.html' %}
 {% endblock %}

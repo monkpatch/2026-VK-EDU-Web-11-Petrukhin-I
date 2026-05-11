@@ -1,0 +1,23 @@
+<article class="card question-card mb-3">
+  <div class="card-body d-flex gap-3">
+    <div class="text-center">
+      <img class="avatar" src="https://picsum.photos/80?{{ question.avatar_seed }}" alt="Avatar" />
+      <div class="vote-widget mt-2" data-like-state="none">
+        <span class="vote-count">{{ question.rating }}</span>
+        <div class="vote-arrows"><button class="btn-up" type="button">▲</button><button class="btn-down" type="button">▼</button></div>
+      </div>
+    </div>
+    <div class="flex-grow-1">
+      <h2 class="h4"><a href="{% url 'question' question.id %}">{{ question.title }}</a></h2>
+      <p class="mb-2">{{ question.text }}</p>
+      <div class="d-flex flex-wrap gap-3 small">
+        <a href="{% url 'question' question.id %}">answer ({{ question.answers_count }})</a>
+        <span>Tags:
+          {% for tag in question.tags %}
+            <a href="{% url 'tag' tag %}">{{ tag }}</a>
+          {% endfor %}
+        </span>
+      </div>
+    </div>
+  </div>
+</article>
