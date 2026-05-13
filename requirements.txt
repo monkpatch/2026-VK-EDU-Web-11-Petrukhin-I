@@ -1,1 +1,4 @@
 Django==6.0.3
+django-debug-toolbar==4.4.6
+Faker==26.0.0
+psycopg[binary]==3.2.9

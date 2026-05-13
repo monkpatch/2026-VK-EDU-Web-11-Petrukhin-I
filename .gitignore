@@ -13,6 +13,8 @@ db.sqlite3
 media/
 staticfiles/
 .env
+.env.local
+.env.docker
 .idea/
 .vscode/
 .DS_Store

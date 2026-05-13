@@ -3,7 +3,9 @@
     <h2 class="h5">Popular Tags</h2>
     <div class="d-flex flex-wrap gap-2">
       {% for tag in popular_tags %}
-        <a href="{% url 'tag' tag %}" class="badge text-bg-light">{{ tag }}</a>
+        <a href="{% url 'tag' tag.slug %}" class="badge text-bg-light">{{ tag.name }}</a>
+      {% empty %}
+        <span class="text-muted">Пока нет ни одного тега</span>
       {% endfor %}
     </div>
   </div>
@@ -14,6 +16,8 @@
     <ul class="list-unstyled mb-0 d-grid gap-2 mt-3">
       {% for member in best_members %}
         <li><a href="#">{{ member }}</a></li>
+      {% empty %}
+        <li class="text-muted">Пока нет участников</li>
       {% endfor %}
     </ul>
   </div>

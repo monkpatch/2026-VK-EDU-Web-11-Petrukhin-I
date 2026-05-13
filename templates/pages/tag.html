@@ -6,6 +6,8 @@
 </div>
 {% for question in page_obj %}
   {% include 'includes/question_card.html' %}
+{% empty %}
+  <p class="text-muted">По этому тегу пока нет вопросов.</p>
 {% endfor %}
 {% include 'includes/paginator.html' %}
 {% endblock %}

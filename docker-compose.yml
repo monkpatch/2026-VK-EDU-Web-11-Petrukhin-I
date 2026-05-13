@@ -1,4 +1,18 @@
 services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
@@ -8,7 +22,10 @@ services:
       - .:/app
       - media:/app/media
     env_file:
-      - .env.example
+      - .env.docker
+    depends_on:
+      - db
 
 volumes:
   media:
+  postgres_data:
