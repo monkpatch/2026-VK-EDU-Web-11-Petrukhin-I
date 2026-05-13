@@ -4,7 +4,7 @@
       <img class="avatar" src="https://picsum.photos/80?{{ question.id }}" alt="Avatar" />
       <div class="vote-widget mt-2" data-like-state="none">
         <span class="vote-count">{{ question.rating }}</span>
-        <div class="vote-arrows"><button class="btn-up" type="button">▲</button><button class="btn-down" type="button">▼</button></div>
+        <div class="vote-arrows"><button class="btn-up" type="button" {% if not request.user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>▲</button><button class="btn-down" type="button" {% if not request.user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>▼</button></div>
       </div>
     </div>
     <div class="flex-grow-1">

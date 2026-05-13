@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1 class="h2 page-title">New Question</h1>
-<form class="d-grid gap-3" style="max-width: 500px;">
-  <div class="row align-items-start g-2"><div class="col-2"><label class="form-label m-0">Title</label></div><div class="col-10"><input class="form-control" value="How to build a moon park ?"></div></div>
-  <div class="row align-items-start g-2"><div class="col-2"><label class="form-label m-0">Text</label></div><div class="col-10"><textarea class="form-control" rows="8">Really, how ?
-Have no idea about it</textarea></div></div>
-  <div class="row align-items-start g-2"><div class="col-2"><label class="form-label m-0">Tags</label></div><div class="col-10"><input class="form-control" value="moon, park, puzzle"></div></div>
+<form class="d-grid gap-3" method="post" style="max-width: 560px;">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+  {% for field in form %}
+    <div class="row align-items-start g-2">
+      <div class="col-2"><label class="form-label m-0" for="{{ field.id_for_label }}">{{ field.label }}</label></div>
+      <div class="col-10">{{ field }}{% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}{% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}</div>
+    </div>
+  {% endfor %}
   <div><button class="btn btn-primary" type="submit">ASK!</button></div>
 </form>
 {% endblock %}

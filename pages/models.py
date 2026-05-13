@@ -22,6 +22,9 @@ class QuestionManager(models.Manager):
     def get_queryset(self):
         return QuestionQuerySet(self.model, using=self._db)
 
+    def with_related(self):
+        return self.get_queryset().with_related()
+
     def new(self):
         return self.get_queryset().new()
 
