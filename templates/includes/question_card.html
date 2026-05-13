@@ -1,10 +1,18 @@
+{% load static %}
 <article class="card question-card mb-3">
   <div class="card-body d-flex gap-3">
     <div class="text-center">
-      <img class="avatar" src="https://picsum.photos/80?{{ question.id }}" alt="Avatar" />
-      <div class="vote-widget mt-2" data-like-state="none">
+      {% if question.author.profile.avatar %}
+        <img class="avatar" src="{{ question.author.profile.avatar.url }}" alt="{{ question.author.username }} avatar" />
+      {% else %}
+        <img class="avatar" src="{% static 'img/default-avatar.svg' %}" alt="Default avatar" />
+      {% endif %}
+      <div class="vote-widget mt-2" data-vote-kind="question" data-object-id="{{ question.id }}" data-like-state="{{ question.user_vote|default:'none' }}">
         <span class="vote-count">{{ question.rating }}</span>
-        <div class="vote-arrows"><button class="btn-up" type="button" {% if not request.user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>▲</button><button class="btn-down" type="button" {% if not request.user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>▼</button></div>
+        <div class="vote-arrows">
+          <button class="btn-up" type="button" {% if not request.user.is_authenticated or question.user_vote == 'up' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Нравится{% endif %}">▲</button>
+          <button class="btn-down" type="button" {% if not request.user.is_authenticated or question.user_vote == 'down' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Не нравится{% endif %}">▼</button>
+        </div>
       </div>
     </div>
     <div class="flex-grow-1">

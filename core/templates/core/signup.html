@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1 class="h2 page-title">Registration</h1>
-<form class="d-grid gap-3" method="post" style="max-width: 560px;">
+<form class="d-grid gap-3" method="post" enctype="multipart/form-data" style="max-width: 560px;">
   {% csrf_token %}
   {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
   {% for field in form %}

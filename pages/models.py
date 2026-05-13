@@ -1,3 +1,6 @@
+import uuid
+from pathlib import Path
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Count
@@ -47,9 +50,14 @@ class Tag(models.Model):
         return self.name
 
 
+def avatar_upload_to(instance, filename):
+    ext = Path(filename).suffix.lower()
+    return f"avatars/{uuid.uuid4().hex}{ext}"
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", verbose_name="пользователь")
-    avatar = models.URLField("аватар", blank=True)
+    avatar = models.ImageField("аватар", upload_to=avatar_upload_to, blank=True, null=True)
 
     class Meta:
         verbose_name = "профиль"

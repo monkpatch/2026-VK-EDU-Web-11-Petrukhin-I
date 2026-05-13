@@ -44,7 +44,7 @@ def signup(request):
     if request.user.is_authenticated:
         return redirect("index")
     if request.method == "POST":
-        form = SignupForm(request.POST)
+        form = SignupForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
@@ -68,10 +68,10 @@ def profile(request):
         "email": request.user.email,
         "username": request.user.username,
         "nickname": request.user.first_name,
-        "avatar": profile_obj.avatar if profile_obj else "",
+        "avatar": profile_obj.avatar if profile_obj else None,
     }
     if request.method == "POST":
-        form = ProfileForm(request.POST, user=request.user)
+        form = ProfileForm(request.POST, request.FILES, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, "Профиль сохранён.")

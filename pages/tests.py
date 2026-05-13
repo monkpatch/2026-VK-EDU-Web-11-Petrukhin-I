@@ -1,8 +1,13 @@
+import json
+import shutil
+import tempfile
+
 from django.contrib.auth.models import User
-from django.test import RequestFactory, TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
-from .models import Answer, Profile, Question, Tag
+from .models import Answer, AnswerLike, Profile, Question, QuestionLike, Tag
 from .views import paginate
 
 
@@ -69,7 +74,7 @@ class FormsFlowTests(TestCase):
         )
         self.assertRedirects(response, reverse("index"))
         user = User.objects.get(username="new_user")
-        self.assertEqual(user.profile.avatar, "https://example.com/avatar.png")
+        self.assertFalse(user.profile.avatar)
 
     def test_login_respects_safe_next_and_rejects_external_redirect(self):
         safe = self.client.post(
@@ -132,7 +137,125 @@ class FormsFlowTests(TestCase):
         self.assertEqual(self.user.username, "updated_author")
         self.assertEqual(self.user.email, "updated@example.com")
         self.assertEqual(self.user.first_name, "Updated")
-        self.assertEqual(self.user.profile.avatar, "https://example.com/updated.png")
+        self.assertFalse(self.user.profile.avatar)
+
+
+class AvatarUploadTests(TestCase):
+    image_bytes = (
+        b"GIF87a\x01\x00\x01\x00\x80\x01\x00\x00\x00\x00ccc,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;"
+    )
+
+    def setUp(self):
+        self.media_root = tempfile.mkdtemp()
+        self.override = override_settings(MEDIA_ROOT=self.media_root)
+        self.override.enable()
+        self.user = User.objects.create_user(username="avatar_user", email="avatar@example.com", password="StrongPass123")
+        Profile.objects.create(user=self.user)
+
+    def tearDown(self):
+        self.override.disable()
+        shutil.rmtree(self.media_root, ignore_errors=True)
+
+    def test_profile_accepts_image_upload_and_stores_unpredictable_media_path(self):
+        self.client.force_login(self.user)
+        upload = SimpleUploadedFile("avatar.gif", self.image_bytes, content_type="image/gif")
+
+        response = self.client.post(
+            reverse("profile"),
+            {
+                "email": "avatar-updated@example.com",
+                "username": "avatar_user",
+                "nickname": "Avatar",
+                "avatar": upload,
+            },
+        )
+
+        self.assertRedirects(response, reverse("profile"))
+        self.user.profile.refresh_from_db()
+        self.assertTrue(self.user.profile.avatar.name.startswith("avatars/"))
+        self.assertTrue(self.user.profile.avatar.name.endswith(".gif"))
+        self.assertNotIn("avatar.gif", self.user.profile.avatar.name)
+
+    def test_profile_rejects_non_image_avatar_upload(self):
+        self.client.force_login(self.user)
+        upload = SimpleUploadedFile("avatar.bmp", self.image_bytes, content_type="image/gif")
+
+        response = self.client.post(
+            reverse("profile"),
+            {
+                "email": "avatar@example.com",
+                "username": "avatar_user",
+                "nickname": "Avatar",
+                "avatar": upload,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Разрешены только изображения")
+        self.user.profile.refresh_from_db()
+        self.assertFalse(self.user.profile.avatar)
+
+
+class AjaxReactionTests(TestCase):
+    def setUp(self):
+        self.author = User.objects.create_user(username="author", email="author@example.com", password="StrongPass123")
+        self.voter = User.objects.create_user(username="voter", email="voter@example.com", password="StrongPass123")
+        self.other = User.objects.create_user(username="other", email="other@example.com", password="StrongPass123")
+        for user in [self.author, self.voter, self.other]:
+            Profile.objects.create(user=user)
+        self.question = Question.objects.create(title="Question", text="Text", author=self.author)
+        self.answer = Answer.objects.create(question=self.question, author=self.other, text="Answer")
+
+    def post_json(self, url, payload, user=None):
+        if user:
+            self.client.force_login(user)
+        return self.client.post(url, data=json.dumps(payload), content_type="application/json", HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+
+    def test_question_like_requires_authenticated_user(self):
+        response = self.post_json(reverse("question_vote"), {"id": self.question.id, "type": "like"})
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()["error"], "auth_required")
+
+    def test_question_like_changes_rating_and_rejects_duplicate_same_vote(self):
+        url = reverse("question_vote")
+        first = self.post_json(url, {"id": self.question.id, "type": "like"}, self.voter)
+        duplicate = self.post_json(url, {"id": self.question.id, "type": "like"}, self.voter)
+        switched = self.post_json(url, {"id": self.question.id, "type": "dislike"}, self.voter)
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(first.json()["rating"], 1)
+        self.assertEqual(duplicate.status_code, 400)
+        self.assertEqual(duplicate.json()["error"], "duplicate_vote")
+        self.assertEqual(switched.status_code, 200)
+        self.assertEqual(switched.json()["rating"], -1)
+        self.assertEqual(QuestionLike.objects.get(user=self.voter, question=self.question).value, -1)
+
+    def test_answer_dislike_changes_rating(self):
+        response = self.post_json(reverse("answer_vote"), {"id": self.answer.id, "type": "dislike"}, self.voter)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["rating"], -1)
+        self.assertEqual(AnswerLike.objects.get(user=self.voter, answer=self.answer).value, -1)
+
+    def test_correct_answer_can_be_marked_only_by_question_author(self):
+        forbidden = self.post_json(
+            reverse("answer_correct"),
+            {"question_id": self.question.id, "answer_id": self.answer.id},
+            self.voter,
+        )
+        allowed = self.post_json(
+            reverse("answer_correct"),
+            {"question_id": self.question.id, "answer_id": self.answer.id},
+            self.author,
+        )
+
+        self.assertEqual(forbidden.status_code, 403)
+        self.assertEqual(forbidden.json()["error"], "forbidden")
+        self.assertEqual(allowed.status_code, 200)
+        self.assertEqual(allowed.json(), {"answer_id": self.answer.id, "is_correct": True})
+        self.answer.refresh_from_db()
+        self.assertTrue(self.answer.is_correct)
 
 
 class PaginationTests(TestCase):

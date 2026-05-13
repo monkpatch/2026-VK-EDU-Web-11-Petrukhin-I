@@ -1,10 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 <article class="card question-card mb-4">
   <div class="card-body d-flex gap-3">
     <div class="text-center">
-      <img class="avatar" src="https://picsum.photos/80?{{ question.id }}" alt="Avatar" />
-      <div class="vote-widget mt-2" data-like-state="up"><span class="vote-count">{{ question.rating }}</span><div class="vote-arrows"><button class="btn-up" type="button" {% if not request.user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>▲</button><button class="btn-down" type="button" {% if not request.user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>▼</button></div></div>
+      {% if question.author.profile.avatar %}
+        <img class="avatar" src="{{ question.author.profile.avatar.url }}" alt="{{ question.author.username }} avatar" />
+      {% else %}
+        <img class="avatar" src="{% static 'img/default-avatar.svg' %}" alt="Default avatar" />
+      {% endif %}
+      <div class="vote-widget mt-2" data-vote-kind="question" data-object-id="{{ question.id }}" data-like-state="{{ question.user_vote|default:'none' }}">
+        <span class="vote-count">{{ question.rating }}</span>
+        <div class="vote-arrows">
+          <button class="btn-up" type="button" {% if not request.user.is_authenticated or question.user_vote == 'up' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Нравится{% endif %}">▲</button>
+          <button class="btn-down" type="button" {% if not request.user.is_authenticated or question.user_vote == 'down' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Не нравится{% endif %}">▼</button>
+        </div>
+      </div>
     </div>
     <div class="flex-grow-1">
       <h1 class="h2">{{ question.title }}</h1>
@@ -21,10 +32,36 @@
 </article>
 
 {% for answer in answers_page %}
-<article class="card answer-card mb-3" id="answer-{{ answer.id }}">
+<article class="card answer-card mb-3 {% if answer.is_correct %}border-success{% endif %}" id="answer-{{ answer.id }}">
   <div class="card-body d-flex gap-3">
-    <div class="text-center"><img class="avatar" src="https://picsum.photos/80?{{ answer.id }}" alt="Avatar" /><div class="vote-widget mt-2" data-like-state="none"><span class="vote-count">{{ answer.rating }}</span><div class="vote-arrows"><button class="btn-up" type="button" {% if not request.user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>▲</button><button class="btn-down" type="button" {% if not request.user.is_authenticated %}disabled title="Войдите, чтобы голосовать"{% endif %}>▼</button></div></div></div>
-    <div class="flex-grow-1"><p>{{ answer.text }}</p><label class="form-check-label"><input class="form-check-input me-1" type="checkbox" {% if answer.is_correct %}checked{% endif %} {% if not request.user.is_authenticated %}disabled title="Войдите, чтобы отмечать ответы"{% endif %}>Correct!</label></div>
+    <div class="text-center">
+      {% if answer.author.profile.avatar %}
+        <img class="avatar" src="{{ answer.author.profile.avatar.url }}" alt="{{ answer.author.username }} avatar" />
+      {% else %}
+        <img class="avatar" src="{% static 'img/default-avatar.svg' %}" alt="Default avatar" />
+      {% endif %}
+      <div class="vote-widget mt-2" data-vote-kind="answer" data-object-id="{{ answer.id }}" data-like-state="{{ answer.user_vote|default:'none' }}">
+        <span class="vote-count">{{ answer.rating }}</span>
+        <div class="vote-arrows">
+          <button class="btn-up" type="button" {% if not request.user.is_authenticated or answer.user_vote == 'up' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Нравится{% endif %}">▲</button>
+          <button class="btn-down" type="button" {% if not request.user.is_authenticated or answer.user_vote == 'down' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Не нравится{% endif %}">▼</button>
+        </div>
+      </div>
+    </div>
+    <div class="flex-grow-1">
+      <p>{{ answer.text }}</p>
+      {% if request.user.is_authenticated and request.user.id == question.author_id %}
+        <label class="form-check-label">
+          <input class="form-check-input me-1 correct-answer-toggle" type="checkbox" data-question-id="{{ question.id }}" data-answer-id="{{ answer.id }}" {% if answer.is_correct %}checked disabled{% endif %}>
+          Correct!
+        </label>
+      {% else %}
+        <label class="form-check-label" title="Только автор вопроса может отметить правильный ответ">
+          <input class="form-check-input me-1" type="checkbox" {% if answer.is_correct %}checked{% endif %} disabled>
+          Correct!
+        </label>
+      {% endif %}
+    </div>
   </div>
 </article>
 {% empty %}
