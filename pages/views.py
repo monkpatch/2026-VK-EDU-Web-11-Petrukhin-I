@@ -121,7 +121,9 @@ def apply_vote(request, model, like_model, target_field):
         return json_error("invalid_id")
 
     with transaction.atomic():
-        target = get_object_or_404(model.objects.select_for_update(), id=object_id)
+        target = model.objects.select_for_update().filter(id=object_id).first()
+        if target is None:
+            return json_error("not_found", status=404)
         lookup = {"user": request.user, target_field: target}
         like = like_model.objects.select_for_update().filter(**lookup).first()
         if like and like.value == vote_value:
@@ -160,10 +162,14 @@ def answer_correct(request):
         return json_error("invalid_id")
 
     with transaction.atomic():
-        question_obj = get_object_or_404(Question.objects.select_for_update(), id=question_id)
+        question_obj = Question.objects.select_for_update().filter(id=question_id).first()
+        if question_obj is None:
+            return json_error("not_found", status=404)
         if question_obj.author_id != request.user.id:
             return json_error("forbidden", status=403)
-        answer = get_object_or_404(Answer.objects.select_for_update(), id=answer_id, question=question_obj)
+        answer = Answer.objects.select_for_update().filter(id=answer_id, question=question_obj).first()
+        if answer is None:
+            return json_error("not_found", status=404)
         Answer.objects.filter(question=question_obj, is_correct=True).exclude(id=answer.id).update(is_correct=False)
         if not answer.is_correct:
             answer.is_correct = True

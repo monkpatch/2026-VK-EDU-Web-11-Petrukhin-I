@@ -53,6 +53,15 @@ class PagesRoutingTests(TestCase):
                 response = self.client.get(url + "?page=2")
                 self.assertContains(response, "pagination")
 
+    def test_authenticated_user_without_profile_can_open_pages(self):
+        user_without_profile = User.objects.create_user(username="no_profile", email="no-profile@example.com", password="StrongPass123")
+        self.client.force_login(user_without_profile)
+
+        response = self.client.get(reverse("index"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "default-avatar.svg")
+
     def test_sidebar_context_contains_popular_tags_and_best_members(self):
         active_user = User.objects.create_user(username="active", email="active@example.com", password="StrongPass123")
         quiet_user = User.objects.create_user(username="quiet", email="quiet@example.com", password="StrongPass123")
@@ -254,6 +263,12 @@ class AjaxReactionTests(TestCase):
         self.assertEqual(switched.json()["rating"], -1)
         self.assertEqual(QuestionLike.objects.get(user=self.voter, question=self.question).value, -1)
 
+    def test_question_like_returns_json_error_for_missing_object(self):
+        response = self.post_json(reverse("question_vote"), {"id": 999999, "type": "like"}, self.voter)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"], "not_found")
+
     def test_answer_dislike_changes_rating(self):
         response = self.post_json(reverse("answer_vote"), {"id": self.answer.id, "type": "dislike"}, self.voter)
 
@@ -279,6 +294,17 @@ class AjaxReactionTests(TestCase):
         self.assertEqual(allowed.json(), {"answer_id": self.answer.id, "is_correct": True})
         self.answer.refresh_from_db()
         self.assertTrue(self.answer.is_correct)
+
+    def test_correct_answer_returns_json_error_for_mismatched_answer(self):
+        other_question = Question.objects.create(title="Other", text="Text", author=self.author)
+        response = self.post_json(
+            reverse("answer_correct"),
+            {"question_id": other_question.id, "answer_id": self.answer.id},
+            self.author,
+        )
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"], "not_found")
 
 
 class PaginationTests(TestCase):
