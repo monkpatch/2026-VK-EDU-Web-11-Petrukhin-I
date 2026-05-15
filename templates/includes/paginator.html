@@ -2,7 +2,7 @@
 <nav aria-label="Questions pagination" class="pagination">
   <ul class="pagination mb-0">
     {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+      <li class="page-item"><a class="page-link" href="?{% if search_query %}q={{ search_query|urlencode }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Previous</a></li>
     {% else %}
       <li class="page-item disabled"><span class="page-link">Previous</span></li>
     {% endif %}
@@ -11,12 +11,12 @@
       {% if page_obj.number == num %}
         <li class="page-item active"><span class="page-link">{{ num }}</span></li>
       {% else %}
-        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        <li class="page-item"><a class="page-link" href="?{% if search_query %}q={{ search_query|urlencode }}&amp;{% endif %}page={{ num }}">{{ num }}</a></li>
       {% endif %}
     {% endfor %}
 
     {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+      <li class="page-item"><a class="page-link" href="?{% if search_query %}q={{ search_query|urlencode }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Next</a></li>
     {% else %}
       <li class="page-item disabled"><span class="page-link">Next</span></li>
     {% endif %}

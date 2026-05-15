@@ -3,7 +3,7 @@ from pathlib import Path
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.urls import reverse
 
 
@@ -19,6 +19,9 @@ class QuestionQuerySet(models.QuerySet):
 
     def by_tag(self, tag_name):
         return self.with_related().filter(tags__slug=tag_name).order_by("-created_at")
+
+    def search(self, query):
+        return self.with_related().filter(Q(title__icontains=query) | Q(text__icontains=query)).order_by("-created_at")
 
 
 class QuestionManager(models.Manager):
@@ -36,6 +39,9 @@ class QuestionManager(models.Manager):
 
     def by_tag(self, tag_name):
         return self.get_queryset().by_tag(tag_name)
+
+    def search(self, query):
+        return self.get_queryset().search(query)
 
 
 class Tag(models.Model):

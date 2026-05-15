@@ -174,6 +174,14 @@ def tag(request, tag_name):
     return render_page(request, "pages/tag.html", f"Tag: {tag_obj.name}", tag_name=tag_obj.name, page_obj=page_obj)
 
 
+def search(request):
+    query = request.GET.get("q", "").strip()
+    questions = Question.objects.search(query) if query else Question.objects.none()
+    page_obj = paginate(questions, request)
+    attach_question_votes(page_obj.object_list, request.user)
+    return render_page(request, "pages/search.html", "Search", search_query=query, page_obj=page_obj)
+
+
 def question(request, question_id):
     question_obj = get_object_or_404(Question.objects.with_related(), id=question_id)
     if request.method == "POST":

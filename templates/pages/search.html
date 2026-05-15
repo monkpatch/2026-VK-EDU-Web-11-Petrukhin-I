@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex align-items-end mb-3 flex-wrap gap-3">
+  <h1 class="h2 m-0">Search</h1>
+  <a href="{% url 'index' %}" class="link-primary">New Questions</a>
+</div>
+{% if search_query %}
+  <p class="text-muted">Результаты поиска по запросу: <strong>{{ search_query }}</strong></p>
+  {% for question in page_obj %}
+    {% include 'includes/question_card.html' %}
+  {% empty %}
+    <p class="text-muted">По этому запросу ничего не найдено.</p>
+  {% endfor %}
+  {% include 'includes/paginator.html' %}
+{% else %}
+  <p class="text-muted">Введите запрос в строке поиска.</p>
+{% endif %}
+{% endblock %}
