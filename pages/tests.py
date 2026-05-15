@@ -8,7 +8,7 @@ from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
 from .models import Answer, AnswerLike, Profile, Question, QuestionLike, Tag
-from .views import paginate
+from .views import paginate, sidebar_context
 
 
 class PagesRoutingTests(TestCase):
@@ -52,6 +52,29 @@ class PagesRoutingTests(TestCase):
             with self.subTest(url=url):
                 response = self.client.get(url + "?page=2")
                 self.assertContains(response, "pagination")
+
+    def test_sidebar_context_contains_popular_tags_and_best_members(self):
+        active_user = User.objects.create_user(username="active", email="active@example.com", password="StrongPass123")
+        quiet_user = User.objects.create_user(username="quiet", email="quiet@example.com", password="StrongPass123")
+        Profile.objects.create(user=active_user)
+        Profile.objects.create(user=quiet_user)
+        popular_tag = Tag.objects.create(name="popular", slug="popular")
+        rare_tag = Tag.objects.create(name="rare", slug="rare")
+        popular_questions = []
+        for index in range(25):
+            question = Question.objects.create(title=f"Popular {index}", text="Text", author=active_user)
+            question.tags.add(popular_tag)
+            popular_questions.append(question)
+        rare_question = Question.objects.create(title="Rare", text="Text", author=quiet_user)
+        rare_question.tags.add(rare_tag)
+        Answer.objects.create(question=popular_questions[0], author=active_user, text="Answer 1")
+        Answer.objects.create(question=popular_questions[1], author=active_user, text="Answer 2")
+
+        context = sidebar_context()
+
+        self.assertEqual(context["popular_tags"][0], popular_tag)
+        self.assertIn(rare_tag, list(context["popular_tags"]))
+        self.assertEqual(context["best_members"][0], active_user)
 
 
 class FormsFlowTests(TestCase):

@@ -1,9 +1,11 @@
 import json
 import math
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import transaction
+from django.db.models import Count, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -24,9 +26,23 @@ def paginate(objects_list, request, per_page=10):
 
 
 def sidebar_context():
+    User = get_user_model()
+    popular_tags = (
+        Tag.objects.annotate(questions_count=Count("questions", distinct=True))
+        .filter(questions_count__gt=0)
+        .order_by("-questions_count", "name")[:20]
+    )
+    best_members = list(
+        User.objects.annotate(
+            questions_count=Count("questions", distinct=True),
+            answers_count=Count("answers", distinct=True),
+        )
+        .filter(Q(questions_count__gt=0) | Q(answers_count__gt=0))
+        .order_by("-answers_count", "-questions_count", "username")[:10]
+    )
     return {
-        "popular_tags": Tag.objects.order_by("name")[:20],
-        "best_members": [],
+        "popular_tags": popular_tags,
+        "best_members": best_members,
     }
 
 
