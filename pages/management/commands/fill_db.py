@@ -57,7 +57,7 @@ class Command(BaseCommand):
         return list(User.objects.order_by("-id")[:count])
 
     def _create_profiles(self, users):
-        profiles = [Profile(user=user, avatar=f"https://picsum.photos/seed/{user.id}/120") for user in users]
+        profiles = [Profile(user=user) for user in users]
         Profile.objects.bulk_create(profiles, batch_size=BATCH_SIZE, ignore_conflicts=True)
 
     def _create_tags(self, fake, count):

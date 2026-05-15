@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.db import connection
 from django.test import RequestFactory, TestCase, override_settings
 from django.test.utils import CaptureQueriesContext
@@ -367,3 +368,12 @@ class PaginationTests(TestCase):
         request = self.factory.get("/?page=999")
         page = paginate(list(range(30)), request, per_page=10)
         self.assertEqual(page.number, 1)
+
+
+class FillDbCommandTests(TestCase):
+    def test_fill_db_keeps_generated_profiles_on_default_avatar(self):
+        call_command("fill_db", 1, verbosity=0)
+
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(Profile.objects.count(), 1)
+        self.assertFalse(Profile.objects.get().avatar)

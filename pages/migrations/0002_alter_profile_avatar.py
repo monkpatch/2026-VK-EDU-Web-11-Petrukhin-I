@@ -4,6 +4,16 @@ import pages.models
 from django.db import migrations, models
 
 
+def clear_legacy_url_avatars(apps, schema_editor):
+    Profile = apps.get_model('pages', 'Profile')
+    Profile.objects.filter(avatar__startswith='http://').update(avatar=None)
+    Profile.objects.filter(avatar__startswith='https://').update(avatar=None)
+
+
+def noop_reverse(apps, schema_editor):
+    pass
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -16,4 +26,5 @@ class Migration(migrations.Migration):
             name='avatar',
             field=models.ImageField(blank=True, null=True, upload_to=pages.models.avatar_upload_to, verbose_name='аватар'),
         ),
+        migrations.RunPython(clear_legacy_url_avatars, noop_reverse),
     ]
