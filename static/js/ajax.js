@@ -10,7 +10,9 @@
       window.location.href = window.askPupkinAjax.loginUrl;
       return;
     }
-    alert('Ошибка: ' + error);
+    if (window.showAskPupkinToast) {
+      window.showAskPupkinToast('Ошибка: ' + error, 'danger');
+    }
   }
 
   function setVoteButtons($widget, vote) {

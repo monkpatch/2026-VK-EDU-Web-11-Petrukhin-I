@@ -1,8 +1,10 @@
 import json
 import math
 
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import transaction
 from django.db.models import Count, Q
@@ -11,6 +13,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AnswerForm, QuestionForm
 from .models import Answer, AnswerLike, Question, QuestionLike, Tag
+
+SIDEBAR_CONTEXT_CACHE_KEY = "pages.sidebar_context.v1"
 
 
 def paginate(objects_list, request, per_page=10):
@@ -25,9 +29,9 @@ def paginate(objects_list, request, per_page=10):
     return page
 
 
-def sidebar_context():
+def build_sidebar_context():
     User = get_user_model()
-    popular_tags = (
+    popular_tags = list(
         Tag.objects.annotate(questions_count=Count("questions", distinct=True))
         .filter(questions_count__gt=0)
         .order_by("-questions_count", "name")[:20]
@@ -44,6 +48,14 @@ def sidebar_context():
         "popular_tags": popular_tags,
         "best_members": best_members,
     }
+
+
+def sidebar_context():
+    return cache.get_or_set(SIDEBAR_CONTEXT_CACHE_KEY, build_sidebar_context, timeout=60)
+
+
+def invalidate_sidebar_context():
+    cache.delete(SIDEBAR_CONTEXT_CACHE_KEY)
 
 
 def render_page(request, template_name, title, **context):
@@ -212,6 +224,7 @@ def question(request, question_id):
         form = AnswerForm(request.POST)
         if form.is_valid():
             answer = form.save(author=request.user, question=question_obj)
+            invalidate_sidebar_context()
             answers_before = question_obj.answers.filter(id__lte=answer.id).count()
             page_number = max(1, math.ceil(answers_before / 10))
             return redirect(f"{question_obj.get_absolute_url()}?page={page_number}#answer-{answer.id}")
@@ -236,7 +249,10 @@ def ask(request):
         form = QuestionForm(request.POST)
         if form.is_valid():
             question_obj = form.save(author=request.user)
+            invalidate_sidebar_context()
+            messages.success(request, "Вопрос добавлен.")
             return redirect(question_obj.get_absolute_url())
+        messages.error(request, "Вопрос не был добавлен, потому что форма содержит ошибки.")
     else:
         form = QuestionForm()
     return render_page(request, "pages/ask.html", "New Question", form=form)

@@ -49,6 +49,17 @@
   </nav>
 </header>
 
+<div id="toast-container" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+  {% for message in messages %}
+    <div class="toast align-items-center text-bg-{% if message.tags == 'error' %}danger{% elif message.tags %}{{ message.tags }}{% else %}info{% endif %} border-0 show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+      <div class="d-flex">
+        <div class="toast-body">{{ message }}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
 <main class="site-main py-4">
   <div class="container">
     <div class="row g-4">
@@ -72,6 +83,26 @@
     answerCorrectUrl: "{% url 'answer_correct' %}",
     loginUrl: "{% url 'login' %}?next={{ request.get_full_path|urlencode }}"
   };
+  window.showAskPupkinToast = function (message, variant) {
+    var container = document.getElementById('toast-container');
+    if (!container) {
+      return;
+    }
+    var toastElement = document.createElement('div');
+    toastElement.className = 'toast align-items-center text-bg-' + (variant || 'danger') + ' border-0';
+    toastElement.setAttribute('role', 'alert');
+    toastElement.setAttribute('aria-live', 'assertive');
+    toastElement.setAttribute('aria-atomic', 'true');
+    toastElement.innerHTML = '<div class="d-flex"><div class="toast-body"></div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>';
+    toastElement.querySelector('.toast-body').textContent = message;
+    container.appendChild(toastElement);
+    var toast = new bootstrap.Toast(toastElement, {delay: 5000});
+    toastElement.addEventListener('hidden.bs.toast', function () { toastElement.remove(); });
+    toast.show();
+  };
+  document.querySelectorAll('#toast-container .toast').forEach(function (toastElement) {
+    new bootstrap.Toast(toastElement).show();
+  });
 </script>
 <script src="{% static 'js/ajax.js' %}"></script>
 </body>

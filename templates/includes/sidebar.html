@@ -15,7 +15,7 @@
     <h2 class="h5">Best Members</h2>
     <ul class="list-unstyled mb-0 d-grid gap-2 mt-3">
       {% for member in best_members %}
-        <li><a href="#">{{ member }}</a></li>
+        <li><span>{{ member }}</span></li>
       {% empty %}
         <li class="text-muted">Пока нет участников</li>
       {% endfor %}

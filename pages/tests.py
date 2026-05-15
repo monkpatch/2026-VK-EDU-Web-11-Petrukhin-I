@@ -1,10 +1,15 @@
 import json
 import shutil
 import tempfile
+from pathlib import Path
 
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db import connection
 from django.test import RequestFactory, TestCase, override_settings
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
 from .models import Answer, AnswerLike, Profile, Question, QuestionLike, Tag
@@ -63,6 +68,7 @@ class PagesRoutingTests(TestCase):
         self.assertContains(response, "default-avatar.svg")
 
     def test_sidebar_context_contains_popular_tags_and_best_members(self):
+        cache.clear()
         active_user = User.objects.create_user(username="active", email="active@example.com", password="StrongPass123")
         quiet_user = User.objects.create_user(username="quiet", email="quiet@example.com", password="StrongPass123")
         Profile.objects.create(user=active_user)
@@ -82,8 +88,19 @@ class PagesRoutingTests(TestCase):
         context = sidebar_context()
 
         self.assertEqual(context["popular_tags"][0], popular_tag)
-        self.assertIn(rare_tag, list(context["popular_tags"]))
+        self.assertIn(rare_tag, context["popular_tags"])
         self.assertEqual(context["best_members"][0], active_user)
+
+    def test_sidebar_context_uses_cache_after_first_call(self):
+        cache.clear()
+        sidebar_context()
+
+        with CaptureQueriesContext(connection) as captured:
+            context = sidebar_context()
+
+        self.assertEqual(len(captured), 0)
+        self.assertIn("popular_tags", context)
+        self.assertIn("best_members", context)
 
 
 class FormsFlowTests(TestCase):
@@ -133,15 +150,45 @@ class FormsFlowTests(TestCase):
         unsafe = self.client.post(reverse("logout"), {"next": "https://evil.example/"})
         self.assertRedirects(unsafe, reverse("index"))
 
-    def test_ask_form_creates_question_with_tags(self):
+    def test_ask_form_creates_question_with_tags_and_success_overlay_message(self):
         self.client.force_login(self.user)
         response = self.client.post(
             reverse("ask"),
             {"title": "How to use forms?", "text": "Need help", "tags": "django, forms"},
+            follow=True,
         )
         question = Question.objects.get(title="How to use forms?")
         self.assertRedirects(response, question.get_absolute_url())
         self.assertEqual(set(question.tags.values_list("name", flat=True)), {"django", "forms"})
+        self.assertContains(response, "toast-container")
+        self.assertContains(response, "Вопрос добавлен.")
+
+    def test_invalid_ask_form_shows_overlay_reason(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("ask"), {"title": "", "text": "", "tags": ""})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "toast-container")
+        self.assertContains(response, "Вопрос не был добавлен, потому что форма содержит ошибки.")
+
+    def test_ask_form_invalidates_sidebar_cache_for_new_tags(self):
+        self.client.force_login(self.user)
+        cache.clear()
+        sidebar_context()
+
+        self.client.post(
+            reverse("ask"),
+            {"title": "Question with fresh tag", "text": "Need help", "tags": "fresh-tag"},
+        )
+        context = sidebar_context()
+
+        self.assertIn("fresh-tag", [tag.name for tag in context["popular_tags"]])
+
+    def test_ajax_errors_use_toast_overlay_instead_of_alert(self):
+        ajax_js = Path(settings.BASE_DIR / "static" / "js" / "ajax.js").read_text(encoding="utf-8")
+
+        self.assertIn("showAskPupkinToast", ajax_js)
+        self.assertNotIn("alert(", ajax_js)
 
     def test_answer_form_creates_answer_and_redirects_to_anchor(self):
         self.client.force_login(self.user)

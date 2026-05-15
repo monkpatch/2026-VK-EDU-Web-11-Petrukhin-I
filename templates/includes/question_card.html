@@ -7,13 +7,7 @@
       {% else %}
         <img class="avatar" src="{% static 'img/default-avatar.svg' %}" alt="Default avatar" />
       {% endif %}
-      <div class="vote-widget mt-2" data-vote-kind="question" data-object-id="{{ question.id }}" data-like-state="{{ question.user_vote|default:'none' }}">
-        <span class="vote-count">{{ question.rating }}</span>
-        <div class="vote-arrows">
-          <button class="btn-up" type="button" {% if not request.user.is_authenticated or question.user_vote == 'up' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Нравится{% endif %}">▲</button>
-          <button class="btn-down" type="button" {% if not request.user.is_authenticated or question.user_vote == 'down' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Не нравится{% endif %}">▼</button>
-        </div>
-      </div>
+      {% include 'includes/vote_widget.html' with item=question kind='question' %}
     </div>
     <div class="flex-grow-1">
       <h2 class="h4"><a href="{{ question.get_absolute_url }}">{{ question.title }}</a></h2>

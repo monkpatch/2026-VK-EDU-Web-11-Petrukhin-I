@@ -1,0 +1,7 @@
+<div class="vote-widget mt-2" data-vote-kind="{{ kind }}" data-object-id="{{ item.id }}" data-like-state="{{ item.user_vote|default:'none' }}">
+  <span class="vote-count">{{ item.rating }}</span>
+  <div class="vote-arrows">
+    <button class="btn-up" type="button" {% if not request.user.is_authenticated or item.user_vote == 'up' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Нравится{% endif %}">▲</button>
+    <button class="btn-down" type="button" {% if not request.user.is_authenticated or item.user_vote == 'down' %}disabled{% endif %} title="{% if not request.user.is_authenticated %}Войдите, чтобы голосовать{% else %}Не нравится{% endif %}">▼</button>
+  </div>
+</div>
